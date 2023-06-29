@@ -3,7 +3,6 @@ const Joi = require('joi');
 const myCustomJoi = Joi.extend(require('joi-phone-number'));
 
 const contacts = require('../../models/contacts');
-// const { HttpError } = require('../../helpers');
 
 const router = express.Router();
 
@@ -28,10 +27,6 @@ router.get('/:contactId', async (req, res, next) => {
     console.log(contactId);
     const result = await contacts.getContactById(contactId);
     if (!result) {
-      // throw HttpError(404, 'Not found');
-      // const error = new Error("Not found");
-      // error.status = 404;
-      // throw error;
       return res.status(404).json({
         message: 'Not found',
       });
@@ -65,9 +60,7 @@ router.delete('/:contactId', async (req, res, next) => {
       return res.status(404).json({
         message: 'Not found',
       });
-      // throw HttpError(404, 'Not found');
     }
-    // res.status(204).send();
     res.json({
       message: 'Contact deleted',
     });

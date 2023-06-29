@@ -10,13 +10,13 @@ const listContacts = async () => {
 
 const getContactById = async contactId => {
   const contacts = await listContacts();
-  if (!contacts) return; // обробник додати??
+  if (!contacts) return null;
   return contacts.find(item => item.id === contactId) || null;
 };
 
 const removeContact = async contactId => {
   const contacts = await listContacts();
-  if (!contacts) return;
+  if (!contacts) return null;
   const removedContact = contacts.find(item => item.id === contactId);
   if (!removedContact) return null;
   const updatedContacts = contacts.filter(item => item.id !== contactId);
@@ -26,7 +26,6 @@ const removeContact = async contactId => {
 
 const addContact = async body => {
   const contacts = await listContacts();
-  if (!contacts) return;
   const newContact = { id: crypto.randomUUID(), ...body };
   contacts.push(newContact);
   fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
