@@ -5,7 +5,7 @@ const validationSchema = require('./validation');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/', async (_, res, next) => {
   try {
     const result = await contacts.listContacts();
     res.json(result);
