@@ -1,16 +1,9 @@
 const express = require('express');
-const Joi = require('joi');
-const myCustomJoi = Joi.extend(require('joi-phone-number'));
 
 const contacts = require('../../models/contacts');
+const validationSchema = require('./validation');
 
 const router = express.Router();
-
-const validationSchema = Joi.object({
-  name: Joi.string().alphanum().min(2).max(30).required(),
-  email: Joi.string().email().required(),
-  phone: myCustomJoi.string().phoneNumber().required(),
-});
 
 router.get('/', async (req, res, next) => {
   try {
@@ -24,7 +17,6 @@ router.get('/', async (req, res, next) => {
 router.get('/:contactId', async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    console.log(contactId);
     const result = await contacts.getContactById(contactId);
     if (!result) {
       return res.status(404).json({
