@@ -1,6 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
 
 const contactsRouter = require('./routes/api/contacts');
 
@@ -15,11 +16,12 @@ app.use(express.json());
 app.use('/api/contacts', contactsRouter);
 
 app.use((_, res) => {
-  res.status(404).json({ message: 'Not found' });
+  res.status(404).json({ message: 'Path not found' });
 });
 
 app.use((err, _, res, __) => {
-  res.status(500).json({ message: err.message });
+  const { statusCode = 500, message = 'Internal server error' } = err;
+  res.status(statusCode).json({ message });
 });
 
 module.exports = app;
