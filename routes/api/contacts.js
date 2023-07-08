@@ -1,6 +1,6 @@
 const express = require('express');
 const { idValidation, validateBody } = require('../../middlewares');
-const { addContactSchema, updateFavoriteSchema } = require('../../models/contact');
+const { addContactSchema, updateFavoriteSchema } = require('../../models');
 
 const {
   listContacts,
