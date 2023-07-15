@@ -4,8 +4,8 @@ const {
   register,
   login,
   logout,
-  current,
-  subscriptionUpdate,
+  getCurrentUser,
+  updateSubscription,
 } = require('../controllers/authControllers');
 const { bodyValidation, auth } = require('../middlewares');
 const { userSchema, updateSubscriptionSchema } = require('../models/users');
@@ -16,10 +16,10 @@ router.post('/register', bodyValidation(userSchema), register);
 
 router.post('/login', bodyValidation(userSchema), login);
 
-router.get('/current', auth, current);
+router.get('/current', auth, getCurrentUser);
 
 router.post('/logout', auth, logout);
 
-router.patch('/', auth, bodyValidation(updateSubscriptionSchema), subscriptionUpdate);
+router.patch('/', auth, bodyValidation(updateSubscriptionSchema), updateSubscription);
 
 module.exports = router;

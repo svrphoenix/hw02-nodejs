@@ -51,7 +51,7 @@ const login = async (req, res) => {
   });
 };
 
-const current = async (req, res) => {
+const getCurrentUser = async (req, res) => {
   const { email, subscription } = req.user;
 
   res.json({
@@ -66,7 +66,7 @@ const logout = async (req, res) => {
   res.status(204).send();
 };
 
-const subscriptionUpdate = async (req, res) => {
+const updateSubscription = async (req, res) => {
   const { _id } = req.user;
 
   const updatedUser = await User.findByIdAndUpdate(_id, req.body, { new: true });
@@ -80,7 +80,7 @@ const subscriptionUpdate = async (req, res) => {
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
-  current: ctrlWrapper(current),
+  getCurrentUser: ctrlWrapper(getCurrentUser),
   logout: ctrlWrapper(logout),
-  subscriptionUpdate: ctrlWrapper(subscriptionUpdate),
+  updateSubscription: ctrlWrapper(updateSubscription),
 };
