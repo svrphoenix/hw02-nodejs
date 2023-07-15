@@ -19,12 +19,6 @@ const auth = async (req, _, next) => {
     if (!user || !user.token || user.token !== token) {
       next(new HttpError(401, 'Not authorized'));
     }
-    // jwt.verify(token, SECRET_KEY);
-    // const user = await User.findOne({ token: token });
-
-    // if (!user) {
-    //   next(new HttpError(401, 'Not authorized'));
-    // }
 
     req.user = user;
     next();
