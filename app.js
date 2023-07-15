@@ -22,7 +22,6 @@ app.use((_, res) => {
 });
 
 app.use((err, _, res, __) => {
-  console.log('Error middleware');
   const { statusCode = 500, message = 'Internal server error' } = err;
   res.status(statusCode).json({ message });
 });

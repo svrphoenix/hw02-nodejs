@@ -5,6 +5,11 @@ const userSchema = Joi.object({
   password: Joi.string().min(4).required(),
 });
 
+const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string().valid('starter', 'pro', 'business').required(),
+});
+
 module.exports = {
   userSchema,
+  updateSubscriptionSchema,
 };
