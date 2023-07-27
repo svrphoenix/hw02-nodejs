@@ -1,4 +1,4 @@
-const { userSchema, updateSubscriptionSchema } = require('./joiSchemas');
+const { userSchema, updateSubscriptionSchema, emailSchema } = require('./joiSchemas');
 const User = require('./user');
 
-module.exports = { User, userSchema, updateSubscriptionSchema };
+module.exports = { User, userSchema, updateSubscriptionSchema, emailSchema };

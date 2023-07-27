@@ -7,9 +7,13 @@ const {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  emailVerification,
+  resendEmailVerification,
 } = require('../controllers/authControllers');
+
 const { bodyValidation, auth, upload } = require('../middlewares');
-const { userSchema, updateSubscriptionSchema } = require('../models/users');
+
+const { userSchema, updateSubscriptionSchema, emailSchema } = require('../models/users');
 
 const router = express.Router();
 
@@ -24,5 +28,9 @@ router.post('/logout', auth, logout);
 router.patch('/', auth, bodyValidation(updateSubscriptionSchema), updateSubscription);
 
 router.patch('/avatars', auth, upload.single('avatar'), updateAvatar);
+
+router.get('/verify/:verificationToken', emailVerification);
+
+router.post('/verify', bodyValidation(emailSchema), resendEmailVerification);
 
 module.exports = router;
