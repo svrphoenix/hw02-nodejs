@@ -53,9 +53,11 @@ const login = async (req, res) => {
   if (!user) {
     throw new HttpError(401, 'Email or password is wrong');
   }
+
   if (!user.verify) {
     throw new HttpError(401, 'Email is not verified');
   }
+
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new HttpError(401, 'Email or password is wrong');
@@ -126,7 +128,7 @@ const emailVerification = async (req, res) => {
   const user = await User.findOne({ verificationToken });
 
   if (!user) {
-    throw new HttpError(404);
+    throw new HttpError(404, 'User not found');
   }
 
   await User.findByIdAndUpdate(user._id, { verificationToken: null, verify: true });
@@ -140,7 +142,7 @@ const resendEmailVerification = async (req, res) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    throw new HttpError(400, 'Email not found');
+    throw new HttpError(404, 'User not found');
   }
 
   if (user.verify) {
