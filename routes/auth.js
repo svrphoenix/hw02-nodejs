@@ -14,6 +14,7 @@ const {
 const { bodyValidation, auth, upload } = require('../middlewares');
 
 const { userSchema, updateSubscriptionSchema, emailSchema } = require('../models/users');
+const { VERIFY_PATH } = require('../constants/path');
 
 const router = express.Router();
 
@@ -29,8 +30,8 @@ router.patch('/', auth, bodyValidation(updateSubscriptionSchema), updateSubscrip
 
 router.patch('/avatars', auth, upload.single('avatar'), updateAvatar);
 
-router.get('/verify/:verificationToken', emailVerification);
+router.get(`${VERIFY_PATH}/:verificationToken`, emailVerification);
 
-router.post('/verify', bodyValidation(emailSchema), resendEmailVerification);
+router.post(VERIFY_PATH, bodyValidation(emailSchema), resendEmailVerification);
 
 module.exports = router;

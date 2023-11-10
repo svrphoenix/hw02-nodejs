@@ -3,7 +3,7 @@ const logger = require('morgan');
 const cors = require('cors');
 require('dotenv').config();
 
-const { PUBLIC } = require('./constants/path');
+const { PUBLIC, CONTACTS_ROUTE, USERS_ROUTE } = require('./constants/path');
 
 const contactsRouter = require('./routes/api/contacts');
 const authRouter = require('./routes/auth');
@@ -18,8 +18,8 @@ app.use(express.json());
 
 app.use(express.static(PUBLIC));
 
-app.use('/api/contacts', contactsRouter);
-app.use('/users', authRouter);
+app.use(CONTACTS_ROUTE, contactsRouter);
+app.use(USERS_ROUTE, authRouter);
 
 app.use((_, res) => {
   res.status(404).json({ message: 'Path not found' });

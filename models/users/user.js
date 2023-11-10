@@ -21,6 +21,10 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    // refresh_token: {
+    // type: String,
+    // default: null,
+    // },
     avatarURL: String,
     verify: {
       type: Boolean,

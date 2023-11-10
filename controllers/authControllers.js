@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const createTokens = require('../helpers/createTokens');
 const gravatar = require('gravatar');
 const path = require('path');
 const fs = require('fs/promises');
@@ -9,15 +9,15 @@ const { User } = require('../models/users');
 
 const { HttpError, ctrlWrapper, sendEmail, imageProcessor } = require('../helpers');
 
-const { SECRET_KEY, BASE_URL } = process.env;
-const { PUBLIC, AVATARS_DIR, VERIFY_PATH } = require('../constants/path');
+const { BASE_URL } = process.env;
+const { PUBLIC, AVATARS_DIR, VERIFY_PATH, USERS_ROUTE } = require('../constants/path');
 
 const avatarsPath = path.join(process.cwd(), PUBLIC, AVATARS_DIR);
 
 const createVerifyEmail = (email, verificationToken) => ({
   to: email,
   subject: 'Contacts application - user email verification token',
-  html: `<p>Please verify your email</p><a target="_blank" href="http://${BASE_URL}/${VERIFY_PATH}/${verificationToken}"><strong>Click to verify</strong></a>`,
+  html: `<p>Please verify your email</p><a target="_blank" href="${BASE_URL}${USERS_ROUTE}${VERIFY_PATH}/${verificationToken}"><strong>Click to verify</strong></a>`,
 });
 
 const register = async (req, res) => {
@@ -63,17 +63,11 @@ const login = async (req, res) => {
     throw new HttpError(401, 'Email or password is wrong');
   }
 
-  const token = jwt.sign(
-    {
-      id: user._id,
-    },
-    SECRET_KEY,
-    { expiresIn: '12h' }
-  );
-  await User.findByIdAndUpdate(user._id, { token });
+  const { accessToken, refreshToken } = createTokens(user);
+  await User.findByIdAndUpdate(user._id, { token: refreshToken });
 
   res.json({
-    token,
+    token: accessToken,
     user: { email: user.email, subscription: user.subscription, avatarURL: user.avatarURL },
   });
 };

@@ -2,31 +2,49 @@ const jwt = require('jsonwebtoken');
 
 const { User } = require('../models/users');
 const { HttpError } = require('../helpers');
+const { createTokens } = require('../helpers/createTokens');
 
-const { SECRET_KEY } = process.env;
+const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
-const auth = async (req, _, next) => {
+const auth = async (req, res, next) => {
   const { authorization = '' } = req.headers;
-  const [bearer, token] = authorization.split(' ', 2);
+  const [bearer, receivedToken] = authorization.split(' ', 2);
 
-  if (bearer !== 'Bearer' || !token) {
+  if (bearer !== 'Bearer' || !receivedToken) {
     return next(new HttpError(401, 'Not authorized'));
   }
 
+  const { id } = jwt.decode(receivedToken);
+  let user;
+
   try {
-    const { id } = jwt.verify(token, SECRET_KEY);
-    const user = await User.findById(id);
-    if (!user || !user.token || user.token !== token) {
-      next(new HttpError(401, 'Not authorized'));
+    user = await User.findById(id);
+
+    if (!user || !user.token) {
+      return next(new HttpError(401, 'Not authorized'));
     }
 
+    jwt.verify(receivedToken, ACCESS_SECRET_KEY);
     req.user = user;
     next();
   } catch (err) {
-    if (err.name === 'TokenExpiredError' || err.name === 'JsonWebTokenError') {
+    if (err.name !== 'TokenExpiredError') {
       return next(new HttpError(401, 'Not authorized'));
     }
-    next(err);
+    try {
+      jwt.verify(user.token, REFRESH_SECRET_KEY);
+      const { accessToken, refreshToken } = createTokens(user);
+      await User.findByIdAndUpdate(
+        user._id,
+        {
+          token: refreshToken,
+        },
+        { new: true }
+      );
+      res.status(200).json({ token: accessToken });
+    } catch (error) {
+      return next(new HttpError(401, 'Not authorized'));
+    }
   }
 };
 
